@@ -66,7 +66,7 @@ Your database user should now be ready for use with Airbyte.
 
 **3. Set up CDC**
 
-For `STANDARD` replication method this is not applicable. If you select the `CDC` replication method then only this is required. Please read [the section on CDC below](mysql.md#setting-up-cdc-for-mysql) for more information.
+For `STANDARD` replication method this is not applicable. If you select the `CDC` replication method then only this is required. Please read the section on CDC below for more information.
 
 **4. That's it!**
 
@@ -184,12 +184,48 @@ MySQL data types are mapped to the following data types when synchronizing data.
 
 If you do not see a type in this list, assume that it is coerced into a string. We are happy to take feedback on preferred mappings.
 
+## Upgrading from 0.6.8 and older versions to 0.6.9 and later versions
+There is a backwards incompatible spec change between MySQL Source connector versions 0.6.8 and 0.6.9. As part of that spec change
+`replication_method` configuration parameter was changed to `object` from `string`. 
+
+In MySQL source connector versions 0.6.8 and older, `replication_method` configuration parameter was saved in the configuration database as follows:
+
+```
+"replication_method": "STANDARD"
+```
+
+Starting with version 0.6.9, `replication_method` configuration parameter is saved as follows:
+```
+"replication_method": {
+    "method": "STANDARD"
+}
+```
+
+After upgrading MySQL Source connector from 0.6.8 or older version to 0.6.9 or newer version you need to fix source configurations in the `actor` table
+in Airbyte database. To do so, you need to run the following two SQL queries:
+
+if you have connections with MySQL Source using _Standard_ replication method:
+```sql
+update public.actor set configuration =jsonb_set(configuration, '{replication_method}', '{"method": "STANDARD"}', true)  
+WHERE actor_definition_id ='435bb9a5-7887-4809-aa58-28c27df0d7ad' AND (configuration->>'replication_method' = 'STANDARD');
+```
+
+if you have connections with MySQL Source using _Logicai Replication (CDC)_ method:
+
+```sql
+update public.actor set configuration =jsonb_set(configuration, '{replication_method}', '{"method": "CDC"}', true)  
+WHERE actor_definition_id ='435bb9a5-7887-4809-aa58-28c27df0d7ad' AND (configuration->>'replication_method' = 'CDC');
+```
+
+follow the instructions in [Airbyte documentation](https://docs.airbyte.com/operator-guides/configuring-airbyte-db/#accessing-the-default-database-located-in-docker-airbyte-db) to
+run SQL queries on Airbyte database.
+
 ## Changelog
 
 | Version | Date       | Pull Request                                               | Subject                                                                                                          |
 |:--------|:-----------|:-----------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------|
 | 0.6.10  | 2022-09-08 | [16007](https://github.com/airbytehq/airbyte/pull/16007)   | Implement per stream state support.                                                                                           |
-| 0.6.9   | 2022-09-03 | [16216](https://github.com/airbytehq/airbyte/pull/16216)   | Standardize spec for CDC replication. Replace the `replication_method` enum with a config object with a `method` enum field. |
+| 0.6.9   | 2022-09-03 | [16216](https://github.com/airbytehq/airbyte/pull/16216)   | Standardize spec for CDC replication. Replace the `replication_method` enum with a config object with a `method` enum field        |
 | 0.6.8   | 2022-09-01 | [16259](https://github.com/airbytehq/airbyte/pull/16259)   | Emit state messages more frequently |
 | 0.6.7   | 2022-08-30 | [16114](https://github.com/airbytehq/airbyte/pull/16114)   | Prevent traffic going on an unsecured channel in strict-encryption version of source mysql                       |
 | 0.6.6   | 2022-08-25 | [15993](https://github.com/airbytehq/airbyte/pull/15993)   | Improved support for connecting over SSL                                                                         |
@@ -244,3 +280,4 @@ If you do not see a type in this list, assume that it is coerced into a string. 
 | 0.1.6   | 2021-01-08 | [1307](https://github.com/airbytehq/airbyte/pull/1307)     | Migrate Postgres and MySQL to use new JdbcSource                                                                 |
 | 0.1.5   | 2020-12-11 | [1267](https://github.com/airbytehq/airbyte/pull/1267)     | Support incremental sync                                                                                         |
 | 0.1.4   | 2020-11-30 | [1046](https://github.com/airbytehq/airbyte/pull/1046)     | Add connectors using an index YAML file                                                                          |
+
