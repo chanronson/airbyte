@@ -14,7 +14,7 @@ export const createLocalJsonDestination = (name: string, destinationPath: string
   cy.wait(3000);
   cy.wait("@checkDestinationConnection");
   cy.wait("@createDestination");
-}
+};
 
 export const createPostgresDestination = (name: string,
   host: string = "localhost",
@@ -48,7 +48,7 @@ export const updateDestination = (name: string, field: string, value: string) =>
 
   cy.wait("@checkDestinationUpdateConnection");
   cy.wait("@updateDestination");
-}
+};
 
 export const deleteDestination = (name: string) => {
   cy.intercept("/api/v1/destinations/delete").as("deleteDestination");
@@ -56,4 +56,4 @@ export const deleteDestination = (name: string) => {
   openSettingForm(name);
   deleteEntity();
   cy.wait("@deleteDestination");
-}
+};

@@ -15,32 +15,35 @@ const connectionNameInput = "input[data-testid='connectionName']";
 const streamNameInput = "input[data-testid='input']";
 
 export const goToReplicationTab = () => {
-    cy.get(replicationTab).click();
-}
+  cy.get(replicationTab).click();
+};
 
 export const enterConnectionName = (name: string) => {
-    cy.get(connectionNameInput).type(name);
-}
+  cy.get(connectionNameInput).type(name);
+};
 
 export const selectSchedule = (value: string) => {
-    cy.get(scheduleDropdown).click();
-    cy.get(scheduleValue(value)).click();
-}
+  cy.get(scheduleDropdown).click();
+  cy.get(scheduleValue(value)).click();
+};
 
 export const fillOutDestinationPrefix = (value: string) => {
-    cy.get(destinationPrefix).clear().type(value).should('have.value', value);;
-}
+  cy.get(destinationPrefix).clear().type(value).should("have.value", value);
+};
 
 export const setupDestinationNamespaceCustomFormat = (value: string) => {
-    cy.get(destinationNamespace).click();
-    cy.get(destinationNamespaceCustom).click();
-    cy.get(destinationNamespaceCustomInput).first().type(value).should('have.value', '${SOURCE_NAMESPACE}' + value);
-}
+  cy.get(destinationNamespace).click();
+  cy.get(destinationNamespaceCustom).click();
+  cy.get(destinationNamespaceCustomInput)
+    .first()
+    .type(value)
+    .should("have.value", "${SOURCE_NAMESPACE}" + value);
+};
 
 export const setupDestinationNamespaceSourceFormat = () => {
-    cy.get(destinationNamespace).click();
-    cy.get(destinationNamespaceSource).click();
-}
+  cy.get(destinationNamespace).click();
+  cy.get(destinationNamespaceSource).click();
+};
 
 export const selectSyncMode = (source: string, dest: string) => {
     cy.get(syncModeDropdown).first().click({ force: true });
@@ -71,9 +74,9 @@ export const searchStream = (value: string) => {
 };
 
 export const checkSuccessResult = () => {
-    cy.get(successResult).should("exist");
-}
+  cy.get(successResult).should("exist");
+};
 
 export const confirmStreamConfigurationChangedPopup = () => {
-    cy.get(saveStreamChangesButton).click();
-}
+  cy.get(saveStreamChangesButton).click();
+};
