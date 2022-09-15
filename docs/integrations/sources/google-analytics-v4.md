@@ -9,7 +9,7 @@ This connector supports GA4 properties through the [Analytics Data API v1](https
 * JSON credentials for the service account that has access to Google Analytics. For more details check [instructions](https://support.google.com/analytics/answer/1009702#zippy=%2Cin-this-article)
 * OAuth 2.0 credentials for the service account that has access to Google Analytics
 * Property ID
-* Custom reports in format `{"name": "<report-name>", "dimensions": ["<dimension-name>", ...], "metrics": ["metric-name", ...]}`
+* Custom reports in format `[{"name": "<report-name>", "dimensions": ["<dimension-name>", ...], "metrics": ["metric-name", ...]}]`
 * Date Range Start Date
 * Data request time increment in days (Optional)
 
